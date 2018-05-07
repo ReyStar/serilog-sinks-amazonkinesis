@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 
 namespace Serilog.Sinks.Amazon.Kinesis.Common
@@ -15,15 +15,18 @@ namespace Serilog.Sinks.Amazon.Kinesis.Common
         private const int THROTTLING_FREE = 0;
         private const int THROTTLING_BUSY = 1;
 
-        public Throttle (Action callback, TimeSpan throttlingTime)
+        public Throttle(Action callback, TimeSpan throttlingTime)
         {
             _callback = callback;
+
             _throttlingTime = throttlingTime;
+
             _timer = new Timer(
                 callback: s => ((Throttle)s).FireTimer(),
                 state: this,
                 dueTime: Timeout.Infinite,
                 period: Timeout.Infinite);
+
             _throttling = THROTTLING_FREE;
         }
 
@@ -35,6 +38,8 @@ namespace Serilog.Sinks.Amazon.Kinesis.Common
                 {
                     _callback();
                 }
+
+                _throttling = THROTTLING_FREE;
             }
         }
 
